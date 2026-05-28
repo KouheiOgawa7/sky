@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>写真登録フォーム</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+            padding: 40px;
+            max-width: 500px;
+            width: 100%;
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 30px;
+            font-size: 24px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 10px;
+            color: #555;
+            font-weight: 500;
+        }
+
+        input[type="file"] {
+            display: block;
+            width: 100%;
+            padding: 10px;
+            border: 2px solid #ddd;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: border-color 0.3s;
+        }
+
+        input[type="file"]:hover {
+            border-color: #667eea;
+        }
+
+        .preview-section {
+            margin-top: 30px;
+            text-align: center;
+        }
+
+        .preview-section h2 {
+            color: #666;
+            font-size: 16px;
+            margin-bottom: 15px;
+        }
+
+        #preview {
+            max-width: 100%;
+            max-height: 400px;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            display: none;
+        }
+
+        #preview.show {
+            display: block;
+        }
+
+        .file-info {
+            margin-top: 15px;
+            padding: 10px;
+            background: #f5f5f5;
+            border-radius: 5px;
+            color: #666;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>📸 写真登録フォーム</h1>
+        
+        <form>
+            <div class="form-group">
+                <label for="photo">写真を選択してください：</label>
+                <input 
+                    type="file" 
+                    id="photo" 
+                    name="photo" 
+                    accept="image/*"
+                    required
+                >
+            </div>
+        </form>
+
+        <div class="preview-section">
+            <h2>プレビュー</h2>
+            <img id="preview" alt="選択された写真">
+            <div id="fileInfo" class="file-info" style="display: none;"></div>
+        </div>
+    </div>
+
+    <script>
+        const photoInput = document.getElementById('photo');
+        const preview = document.getElementById('preview');
+        const fileInfo = document.getElementById('fileInfo');
+
+        photoInput.addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            
+            if (file) {
+                // 画像ファイルか確認
+                if (!file.type.startsWith('image/')) {
+                    alert('画像ファイルを選択してください');
+                    return;
+                }
+
+                // FileReaderを使用して画像を読み込み
+                const reader = new FileReader();
+                
+                reader.onload = function(event) {
+                    preview.src = event.target.result;
+                    preview.classList.add('show');
+
+                    // ファイル情報を表示
+                    const fileSizeKB = (file.size / 1024).toFixed(2);
+                    fileInfo.innerHTML = `
+                        <strong>ファイル名：</strong> ${file.name}<br>
+                        <strong>ファイルサイズ：</strong> ${fileSizeKB} KB<br>
+                        <strong>ファイル種類：</strong> ${file.type}
+                    `;
+                    fileInfo.style.display = 'block';
+                };
+                
+                reader.readAsDataURL(file);
+            }
+        });
+    </script>
+</body>
+</html>
